@@ -18,7 +18,7 @@ device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 path = osp.join(osp.dirname(osp.realpath(__file__)), '../../data/MovieLens')
 dataset = MovieLens(path, model_name='all-MiniLM-L6-v2')
-data = dataset[0].to(device)
+data = dataset[0].to(device)                                      # extracts the first item from the MovieLens
 
 # Add user node features for message passing:
 data['user'].x = torch.eye(data['user'].num_nodes, device=device)
