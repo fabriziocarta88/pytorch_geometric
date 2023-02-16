@@ -16,13 +16,14 @@ args = parser.parse_args()
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
+# preparing the data object for use as input to a PyTorch model
 path = osp.join(osp.dirname(osp.realpath(__file__)), '../../data/MovieLens')
 dataset = MovieLens(path, model_name='all-MiniLM-L6-v2')
 data = dataset[0].to(device)                                      # extracts the first item from the MovieLens
 
 # Add user node features for message passing:
-data['user'].x = torch.eye(data['user'].num_nodes, device=device)
-del data['user'].num_nodes
+data['user'].x = torch.eye(data['user'].num_nodes, device=device)    # creates a one-hot encoding of the nodes in the 'user' feature tensor
+del data['user'].num_nodes                                           # (PyTorch Geometric) will rely on the shape of the 'x' attribute to determine the number of nodes
 
 # Add a reverse ('movie', 'rev_rates', 'user') relation for message passing:
 data = T.ToUndirected()(data)
